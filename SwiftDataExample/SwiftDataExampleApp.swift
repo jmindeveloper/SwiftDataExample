@@ -16,3 +16,4 @@ struct SwiftDataExampleApp: App {
         }
     }
 }
+

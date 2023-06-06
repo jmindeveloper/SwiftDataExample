@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     let context = container?.mainContext
-    var items: [TodoItem] = []
+    var todoItems: [TodoItem] = []
     
     private var subscriptions = Set<AnyCancellable>()
     
@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     
     func fetchContext() {
         let fetchDescriptor = FetchDescriptor<TodoItem>(sortBy: [SortDescriptor<TodoItem>(\TodoItem.title, order: .forward), SortDescriptor<TodoItem>(\TodoItem.createdAt, order: .forward)])
-        self.items = (try? context?.fetch(fetchDescriptor)) ?? []
+        self.todoItems = (try? context?.fetch(fetchDescriptor)) ?? []
         self.tableView.reloadData()
     }
     
@@ -55,7 +55,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        return todoItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -66,9 +66,9 @@ extension ViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configureCell(todoItem: items[indexPath.row])
+        cell.configureCell(todoItem: todoItems[indexPath.row])
         cell.completedHandler = { [weak self] in
-            self?.items[indexPath.row].isCompleted.toggle()
+            self?.todoItems[indexPath.row].isCompleted.toggle()
             self?.fetchContext()
         }
         
@@ -79,7 +79,7 @@ extension ViewController: UITableViewDataSource {
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            context?.delete(items[indexPath.row])
+            context?.delete(todoItems[indexPath.row])
             fetchContext()
         }
     }
