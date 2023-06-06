@@ -8,25 +8,9 @@
 import SwiftUI
 import SwiftData
 
-@Model
-class TodoItem {
-    let id: UUID
-    
-    var title: String
-    var isCompleted: Bool
-    var createdAt: Date
-    
-    init(title: String, isCompleted: Bool, createdAt: Date) {
-        self.id = UUID()
-        self.title = title
-        self.isCompleted = isCompleted
-        self.createdAt = createdAt
-    }
-}
-
 struct ContentView: View {
     @Environment(\.modelContext) private var context
-    @Query(sort: \.title, order: .forward, animation: .default) var allTodoItems: [TodoItem]
+    @Query(sort: [SortDescriptor<TodoItem>(\TodoItem.title, order: .forward), SortDescriptor<TodoItem>(\TodoItem.createdAt, order: .forward)], animation: .default) var allTodoItems: [TodoItem]
     
     var body: some View {
         VStack {
@@ -105,14 +89,5 @@ struct CreateTodoItemView: View {
     func clear() {
         todoTitle = ""
         isCompleted = false
-    }
-}
-
-extension Date {
-    func toString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.mm.dd"
-        
-        return formatter.string(from: self)
     }
 }
